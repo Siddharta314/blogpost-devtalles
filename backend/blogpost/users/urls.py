@@ -1,7 +1,10 @@
 from django.urls import path
 
+from .views import RegisterView, MeView
+
 app_name = "users"
 
 urlpatterns = [
-    # URLs para users se implementarán en la siguiente feature
+    path("auth/register/", RegisterView.as_view(), name="register"),
+    path("auth/me/", MeView.as_view(), name="me"),
 ]
