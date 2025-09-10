@@ -38,7 +38,7 @@ class CommentDetailSerializer(serializers.ModelSerializer):
     """
 
     author = serializers.StringRelatedField(read_only=True)
-    replies = CommentListSerializer(many=True, read_only=True)
+    replies = serializers.SerializerMethodField()
     is_reply = serializers.ReadOnlyField()
     is_deleted = serializers.ReadOnlyField()
 
@@ -60,6 +60,12 @@ class CommentDetailSerializer(serializers.ModelSerializer):
             "replies",
         )
         read_only_fields = ("id", "created_at", "updated_at", "is_edited", "is_deleted")
+
+    def get_replies(self, obj):
+        """Obtiene las respuestas ordenadas por fecha de creación."""
+        # Usar ordered_replies si está disponible (desde Prefetch), sino usar replies normales
+        replies = getattr(obj, "ordered_replies", obj.replies.all())
+        return CommentListSerializer(replies, many=True).data
 
 
 class CommentCreateUpdateSerializer(serializers.ModelSerializer):

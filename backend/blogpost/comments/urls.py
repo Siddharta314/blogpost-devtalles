@@ -1,7 +1,14 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+
+from .views import CommentViewSet
+
+# Router para ViewSets
+router = DefaultRouter()
+router.register(r"comments", CommentViewSet, basename="comments")
 
 app_name = "comments"
 
 urlpatterns = [
-    # URLs para comments se implementarán en la siguiente feature
+    path("", include(router.urls)),
 ]
