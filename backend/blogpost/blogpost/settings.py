@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "allauth.socialaccount.providers.discord",
     # rest
     "rest_framework",
+    "django_filters",
     # Local apps
     "users",
     "posts",
@@ -154,6 +155,15 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAuthenticated",
         # "rest_framework.permissions.AllowAny",
     ],
+    "DEFAULT_FILTER_BACKENDS": [
+        "django_filters.rest_framework.DjangoFilterBackend",
+        "rest_framework.filters.OrderingFilter",
+        "rest_framework.filters.SearchFilter",
+    ],
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 20,
+    "PAGE_SIZE_QUERY_PARAM": "page_size",
+    "MAX_PAGE_SIZE": 100,
 }
 
 AUTHENTICATION_BACKENDS = [
