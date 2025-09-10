@@ -28,6 +28,9 @@ dev = [
   "mypy>=1.10,<2.0",
 ]
 
+[tool.uv]
+package = false 
+
 [tool.pytest.ini_options]
 minversion = "8.0"
 addopts = "-ra"
