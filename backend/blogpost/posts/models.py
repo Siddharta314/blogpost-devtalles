@@ -1,5 +1,21 @@
 from django.db import models
 from django.conf import settings
+from django.utils import timezone
+
+
+class PostManager(models.Manager):
+    """
+    Manager personalizado que filtra automáticamente los posts eliminados.
+    """
+
+    def get_queryset(self):
+        return super().get_queryset().filter(deleted_at__isnull=True)
+
+    def soft_delete(self):
+        """
+        Marca todos los posts del queryset como eliminados (soft delete).
+        """
+        return self.update(deleted_at=timezone.now())
 
 
 class Category(models.Model):
@@ -64,6 +80,10 @@ class Post(models.Model):
     )
     image = models.ImageField(upload_to="posts/", null=True, blank=True)
 
+    # Managers
+    objects = PostManager()  # Manager personalizado (filtra eliminados)
+    all_objects = models.Manager()  # Manager para ver todos (incluyendo eliminados)
+
     class Meta:
         ordering = ["-created_at"]
         indexes = [
@@ -74,6 +94,11 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+    def delete(self, *args, **kwargs):
+        """Soft delete: marca el post como eliminado en vez de borrarlo."""
+        self.deleted_at = timezone.now()
+        self.save(update_fields=["deleted_at"])
 
     @property
     def is_deleted(self):
